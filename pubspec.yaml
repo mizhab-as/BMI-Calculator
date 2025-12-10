@@ -17,3 +17,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/bad.png
+    - assets/images/good.png
+    - assets/images/under.png
+    - assets/images/obese.png
