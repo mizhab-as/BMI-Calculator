@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'bmi_screen.dart'; // Ensure this file exists
+import 'package:trial1/splash_screen.dart';
 
 void main() {
   runApp(const BMICalculatorApp());
@@ -101,7 +101,7 @@ class BMICalculatorApp extends StatelessWidget {
         ),
       ),
 
-      home: const BMIScreen(),
+      home: const SplashScreen(),
     );
   }
 }
