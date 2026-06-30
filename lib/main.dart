@@ -8,99 +8,149 @@ void main() {
 class BMICalculatorApp extends StatelessWidget {
   const BMICalculatorApp({super.key});
 
-  // Define your brand color (used to generate a harmonious scheme)
-  static const MaterialColor primaryBrandColor =
-      Colors.teal; // A calming, health-related color
-
   @override
   Widget build(BuildContext context) {
+    // Premium health brand color scheme (Calming teal and modern indigo)
+    const primaryColor = Color(0xFF0D9488); // Deep Teal
+    const secondaryColor = Color(0xFF4F46E5); // Indigo
+    const darkBg = Color(0xFF090D16); // High-premium dark blue-black
+    const darkSurface = Color(0xFF151D2A); // Glass card backdrop
+    const darkBorder = Color(0xFF222F43); // Subtle card boundary
+
     return MaterialApp(
-      title: 'BMI Calculator',
+      title: 'Smart BMI',
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.system, // Respect system settings
 
-      // Use ThemeMode.system so it respects the device's setting (Light/Dark)
-      themeMode: ThemeMode.system,
-
-      // 1. Light Theme Definition (Best Practice to include for system mode)
+      // 1. Light Theme
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryBrandColor,
+          seedColor: primaryColor,
           brightness: Brightness.light,
+          primary: primaryColor,
+          secondary: secondaryColor,
+          surface: const Color(0xFFF8FAFC),
         ),
-        // Define input field styling for the light theme
+        scaffoldBackgroundColor: const Color(0xFFF1F5F9),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: Color(0xFF0F172A),
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+          iconTheme: IconThemeData(color: Color(0xFF0F172A)),
+        ),
+        cardTheme: CardTheme(
+          color: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.shade200, width: 1),
+          ),
+        ),
         inputDecorationTheme: InputDecorationTheme(
-          labelStyle: TextStyle(color: primaryBrandColor),
+          filled: true,
+          fillColor: Colors.white,
+          labelStyle: const TextStyle(color: primaryColor, fontWeight: FontWeight.w500),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12), // Add rounded corners
-            borderSide: BorderSide(color: Colors.grey.shade400),
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: primaryBrandColor, width: 2),
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: primaryColor, width: 2),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 1),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
         ),
       ),
 
-      // 2. Dark Theme Definition (The one you initially focused on)
+      // 2. Dark Theme (Focus point for premium vibe)
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        // Use the same seed color to ensure consistency, but set brightness to dark
         colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryBrandColor,
+          seedColor: primaryColor,
           brightness: Brightness.dark,
-          // You can override specific colors for extra contrast in Dark Mode:
-          surface: Colors.grey.shade900,
+          primary: primaryColor,
+          secondary: secondaryColor,
+          surface: darkSurface,
           onSurface: Colors.white,
+          outline: darkBorder,
         ),
-        scaffoldBackgroundColor:
-            Colors.black, // Pure black background for high contrast
-
+        scaffoldBackgroundColor: darkBg,
         appBarTheme: const AppBarTheme(
-          color: Colors.black, // App bar matches scaffold background
+          backgroundColor: Colors.transparent,
           elevation: 0,
+          centerTitle: true,
           titleTextStyle: TextStyle(
             color: Colors.white,
-            fontSize: 24,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        cardTheme: CardTheme(
+          color: darkSurface,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: darkBorder, width: 1.5),
           ),
         ),
-
-        // Define input field styling for the dark theme
         inputDecorationTheme: InputDecorationTheme(
-          labelStyle: TextStyle(color: primaryBrandColor.shade200),
+          filled: true,
+          fillColor: const Color(0xFF0F1724),
+          labelStyle: const TextStyle(color: Colors.tealAccent, fontWeight: FontWeight.w500),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              12,
-            ), // Consistent rounded corners
-            borderSide: BorderSide(color: Colors.grey.shade700),
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: darkBorder, width: 1.5),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: primaryBrandColor, width: 2),
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Colors.tealAccent, width: 2),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 2),
           ),
         ),
-
-        // Button style for a modern look
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor:
-                primaryBrandColor, // Use the primary color for buttons
-            foregroundColor: Colors.white, // White text on primary button
-            padding: const EdgeInsets.symmetric(vertical: 15),
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            textStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+              borderRadius: BorderRadius.circular(14),
             ),
           ),
         ),
       ),
-
       home: const SplashScreen(),
     );
   }
