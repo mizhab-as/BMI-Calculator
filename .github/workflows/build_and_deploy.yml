@@ -51,3 +51,13 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/web
+
+      # 5. Create GitHub Release & Upload APK
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/flutter-apk/app-release.apk"
+          tag: "v1.0.0"
+          name: "Smart BMI v1.0.0"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
