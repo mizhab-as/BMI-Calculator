@@ -92,3 +92,26 @@ To run on desktop Windows:
 ```bash
 flutter run -d windows
 ```
+
+---
+
+## CI/CD & Live Deployment (Automated)
+
+We have configured a fully automated build and deploy pipeline via **GitHub Actions** in [.github/workflows/build_and_deploy.yml](file:///c:/Users/admin/Documents/Project/Smart%20BMI/.github/workflows/build_and_deploy.yml).
+
+Every time code is pushed to the `main` branch, the pipeline will:
+1. **Build the Android APK**: Automatically compiles the app into a release APK and uploads it to your GitHub Action Run. Anyone can download this APK directly to their Android phone!
+2. **Build & Deploy Flutter Web**: Automatically builds the Flutter web assets and deploys them to **GitHub Pages** so everyone can see the app running live.
+
+### How to access the APK:
+1. Go to your repository on GitHub: `https://github.com/mizhab-as/BMI-Calculator`
+2. Click on the **Actions** tab.
+3. Select the latest workflow run (e.g., "Build and Deploy Smart BMI").
+4. Scroll down to the **Artifacts** section at the bottom of the page and click **Smart-BMI-Android-APK** to download!
+
+### How to configure GitHub Pages (First time only):
+1. In your GitHub repository, click on **Settings** (gear icon).
+2. On the left sidebar, click **Pages** (under the "Code and automation" section).
+3. Under "Build and deployment", set the source to **Deploy from a branch**.
+4. Set the branch to **`gh-pages`** and the folder to **`/ (root)`**, then click **Save**.
+5. Your live app will be available online at `https://mizhab-as.github.io/BMI-Calculator/`!

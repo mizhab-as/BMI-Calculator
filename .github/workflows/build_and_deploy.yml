@@ -1,0 +1,53 @@
+name: Build and Deploy Smart BMI
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Get Package Dependencies
+        run: flutter pub get
+
+      # 1. Build Android APK
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      # 2. Upload APK as Workflow Artifact (Downloadable by anyone)
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Smart-BMI-Android-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # 3. Build Flutter Web
+      - name: Build Flutter Web
+        run: flutter build web --base-href "/BMI-Calculator/"
+
+      # 4. Deploy Flutter Web to GitHub Pages
+      - name: Deploy Flutter Web to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
