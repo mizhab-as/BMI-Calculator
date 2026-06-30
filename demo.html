@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart BMI - Wellness Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #090d16;
+            --surface-color: #151d2a;
+            --border-color: #222f43;
+            --primary-color: #0d9488;
+            --secondary-color: #4f46ee;
+            --text-color: #ffffff;
+            --text-muted: #8a9bb4;
+            --underweight: #06b6d4;
+            --normal: #10b981;
+            --overweight: #f59e0b;
+            --obese: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 10px 0;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #0d9488, #4f46ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-tab {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 12px rgba(13, 148, 136, 0.35);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        /* Gender selector */
+        .gender-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .gender-card {
+            flex: 1;
+            background: var(--surface-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gender-card svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--text-muted);
+            transition: fill 0.25s;
+        }
+
+        .gender-card.active.male {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.08);
+            color: #3b82f6;
+        }
+        .gender-card.active.male svg {
+            fill: #3b82f6;
+        }
+
+        .gender-card.active.female {
+            border-color: #ec4899;
+            background: rgba(236, 72, 153, 0.08);
+            color: #ec4899;
+        }
+        .gender-card.active.female svg {
+            fill: #ec4899;
+        }
+
+        /* Custom Input Sliders */
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .slider-val {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary-color);
+        }
+
+        .slider-control {
+            width: 100%;
+            height: 6px;
+            background: var(--border-color);
+            outline: none;
+            border-radius: 3px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider-control::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(13, 148, 136, 0.5);
+            transition: transform 0.1s;
+        }
+
+        .slider-control::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Adjusters */
+        .adjust-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .adjust-card {
+            flex: 1;
+            text-align: center;
+        }
+
+        .adjust-val {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 8px 0 12px 0;
+        }
+
+        .adjust-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .btn-adjust {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-adjust:active {
+            background: var(--border-color);
+            transform: scale(0.9);
+        }
+
+        /* Dropdown selector */
+        select {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px;
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Calculate Button */
+        .btn-calc {
+            width: 100%;
+            height: 56px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(13, 148, 136, 0.3);
+            transition: all 0.25s;
+            margin-top: 10px;
+        }
+
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13, 148, 136, 0.45);
+        }
+
+        /* Results panel */
+        .results-panel {
+            display: none;
+        }
+
+        .results-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SVG Needle Gauge */
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .gauge-svg {
+            width: 250px;
+            height: 130px;
+        }
+
+        .gauge-needle {
+            transform-origin: 100px 90px;
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            fill: var(--text-color);
+        }
+
+        .gauge-value {
+            font-size: 22px;
+            font-weight: 900;
+            margin-top: 12px;
+        }
+
+        /* Metrics grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .metric-val {
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .metric-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        /* Advice Card */
+        .advice-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .advice-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .advice-content h4 {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .advice-content p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Action Row */
+        .action-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .btn-action {
+            flex: 1;
+            height: 50px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:disabled {
+            background: #374151;
+            color: #9ca3af;
+            cursor: default;
+            box-shadow: none;
+        }
+
+        /* Stats & History View */
+        .history-panel {
+            display: none;
+        }
+
+        .history-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Graph Canvas */
+        .graph-card {
+            text-align: center;
+        }
+
+        .graph-canvas-container {
+            width: 100%;
+            height: 180px;
+            margin-top: 15px;
+            position: relative;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .graph-toggles {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        /* Log items */
+        .log-item {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .log-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .log-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .log-date {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-delete svg {
+            width: 20px;
+            height: 20px;
+            fill: #ef4444;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .btn-delete:hover svg {
+            opacity: 1;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-history svg {
+            width: 48px;
+            height: 48px;
+            fill: var(--text-muted);
+            opacity: 0.3;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SMART BMI</h1>
+        <div class="header-actions">
+            <button class="btn-tab active" id="tab-calc" onclick="switchView('calc')">CALCULATOR</button>
+            <button class="btn-tab" id="tab-history" onclick="switchView('history')">HISTORY</button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- LEFT: INPUT PANELS -->
+        <section class="left-column">
+            <!-- Units Toggler -->
+            <div class="card" style="padding: 12px 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; font-weight: 800; color: var(--text-muted);">UNIT SYSTEM</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn-tab active" id="unit-metric" onclick="setUnit(true)" style="padding: 6px 14px; font-size: 11px;">METRIC</button>
+                        <button class="btn-tab" id="unit-imperial" onclick="setUnit(false)" style="padding: 6px 14px; font-size: 11px;">IMPERIAL</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inputs Card -->
+            <div class="card">
+                <div class="card-title">Select Details</div>
+
+                <!-- Gender Selection -->
+                <div class="gender-container">
+                    <div class="gender-card active male" id="gender-male" onclick="setGender('male')">
+                        <svg viewBox="0 0 24 24"><path d="M9 9c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm0 2c-2.7 0-8 1.35-8 4v2h16v-2c0-2.65-5.3-4-8-4zm11.29-2.29l-1.42 1.42 2.3 2.29-2.3 2.29 1.42 1.42 3.71-3.71z"/></svg>
+                        <span style="font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">MALE</span>
+                    </div>
+                    <div class="gender-card female" id="gender-female" onclick="setGender('female')">
+                        <svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>
+                        <span style="font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">FEMALE</span>
+                    </div>
+                </div>
+
+                <!-- Height Slider -->
+                <div style="margin-bottom: 24px;">
+                    <div class="slider-header">
+                        <span style="font-size: 12px; font-weight: 700; color: var(--text-muted);">HEIGHT</span>
+                        <span class="slider-val" id="height-readout">170 cm</span>
+                    </div>
+                    <input type="range" class="slider-control" id="height-slider" min="100" max="220" value="170" oninput="updateHeight(this.value)">
+                </div>
+
+                <!-- Weight and Age Row -->
+                <div class="adjust-row">
+                    <div class="card adjust-card" style="margin-bottom:0; flex:1; padding: 16px;">
+                        <span style="font-size: 10px; font-weight: 700; color: var(--text-muted);">WEIGHT</span>
+                        <div class="adjust-val" id="weight-readout">70.0 kg</div>
+                        <div class="adjust-actions">
+                            <button class="btn-adjust" onclick="adjustWeight(-1)">−</button>
+                            <button class="btn-adjust" onclick="adjustWeight(1)">+</button>
+                        </div>
+                    </div>
+                    <div class="card adjust-card" style="margin-bottom:0; flex:1; padding: 16px;">
+                        <span style="font-size: 10px; font-weight: 700; color: var(--text-muted);">AGE</span>
+                        <div class="adjust-val" id="age-readout">25</div>
+                        <div class="adjust-actions">
+                            <button class="btn-adjust" onclick="adjustAge(-1)">−</button>
+                            <button class="btn-adjust" onclick="adjustAge(1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity level dropdown -->
+                <div style="margin-bottom: 24px;">
+                    <span style="font-size: 10px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom:8px;">ACTIVITY LEVEL</span>
+                    <select id="activity-level">
+                        <option value="sedentary">Sedentary (Little/no exercise)</option>
+                        <option value="lightly active">Lightly Active (Exercise 1-3x/week)</option>
+                        <option value="moderately active" selected>Moderately Active (Exercise 3-5x/week)</option>
+                        <option value="very active">Very Active (Exercise 6-7x/week)</option>
+                        <option value="extra active">Extra Active (Intense daily physical work)</option>
+                    </select>
+                </div>
+
+                <button class="btn-calc" onclick="calculateBmi()">CALCULATE BMI</button>
+            </div>
+        </section>
+
+        <!-- RIGHT: ANALYSIS REPORT & HISTORY -->
+        <section class="right-column">
+            <!-- VIEW A: CALCULATOR RESULTS -->
+            <div class="results-panel" id="results-panel">
+                <!-- Gauge Widget -->
+                <div class="card" style="text-align: center;">
+                    <div class="card-title">Analysis Report</div>
+                    <div class="gauge-container">
+                        <svg class="gauge-svg" viewBox="0 0 200 100">
+                            <!-- Arcs -->
+                            <path d="M20 90 A80 80 0 0 1 60 20.7" fill="none" stroke="var(--underweight)" stroke-width="18" />
+                            <path d="M60 20.7 A80 80 0 0 1 100 10" fill="none" stroke="var(--normal)" stroke-width="18" />
+                            <path d="M100 10 A80 80 0 0 1 140 20.7" fill="none" stroke="var(--overweight)" stroke-width="18" />
+                            <path d="M140 20.7 A80 80 0 0 1 180 90" fill="none" stroke="var(--obese)" stroke-width="18" />
+                            <!-- Pin -->
+                            <circle cx="100" cy="90" r="10" fill="var(--text-color)" />
+                            <!-- Needle -->
+                            <polygon points="98,90 100,22 102,90" class="gauge-needle" id="needle" />
+                            <circle cx="100" cy="90" r="4" fill="var(--primary-color)" />
+                        </svg>
+                        <div class="gauge-value" id="res-status" style="color: var(--normal);">HEALTHY WEIGHT</div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-top: 4px;">
+                            BMI = <span id="res-bmi-val" style="color: var(--text-color); font-weight: 800;">22.4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span>BODY FAT %</span>
+                            <span style="color: var(--underweight);">●</span>
+                        </div>
+                        <div class="metric-val" id="res-bfp">18.2%</div>
+                        <div class="metric-desc" id="res-bfp-desc">Athlete</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span>IDEAL RANGE</span>
+                            <span style="color: var(--normal);">●</span>
+                        </div>
+                        <div class="metric-val" id="res-ideal" style="font-size: 17px; padding: 2px 0;">53.5 - 72.0</div>
+                        <div class="metric-desc">kg</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span>BMR (REST)</span>
+                            <span style="color: var(--overweight);">●</span>
+                        </div>
+                        <div class="metric-val" id="res-bmr">1,540</div>
+                        <div class="metric-desc">kcal / day</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span>TDEE (ACTIVE)</span>
+                            <span style="color: var(--secondary-color);">●</span>
+                        </div>
+                        <div class="metric-val" id="res-tdee">2,380</div>
+                        <div class="metric-desc">kcal / day</div>
+                    </div>
+                </div>
+
+                <!-- Suggestions Card -->
+                <div class="card">
+                    <div class="advice-row">
+                        <div class="advice-content">
+                            <h4 id="res-advice-title" style="color: var(--normal);">HEALTH SUGGESTION</h4>
+                            <p id="res-advice-body">Great job! Maintain your current routine by balancing a nutritious diet with regular cardio and physical exercise.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button Row -->
+                <div class="action-row">
+                    <button class="btn-action btn-outline" onclick="resetCalculator()">RE-CALCULATE</button>
+                    <button class="btn-action btn-primary" id="btn-save" onclick="saveResult()">SAVE REPORT</button>
+                </div>
+            </div>
+
+            <!-- VIEW B: HISTORY TRACKING -->
+            <div class="history-panel" id="history-panel">
+                <!-- Summary Card -->
+                <div class="card" id="history-stats-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-size:12px; color:var(--text-muted); font-weight:600;">Weight Progress</div>
+                            <div id="hist-change-val" style="font-size:24px; font-weight:900; color:var(--normal); margin-top:4px;">No change</div>
+                        </div>
+                        <div id="hist-icon-box" style="padding:10px; background:rgba(16,185,129,0.1); border-radius:50%; display:flex;">
+                            <svg width="24" height="24" fill="var(--normal)" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:20px; border-top:1px solid var(--border-color); padding-top:15px;">
+                        <div>
+                            <div style="font-size:10px; color:var(--text-muted);">START</div>
+                            <div id="hist-start-weight" style="font-weight:700; margin-top:2px;">--</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:var(--text-muted);">CURRENT</div>
+                            <div id="hist-curr-weight" style="font-weight:700; margin-top:2px;">--</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:var(--text-muted);">TARGET ZONE</div>
+                            <div style="font-weight:700; margin-top:2px; color:var(--normal);">18.5 - 24.9 BMI</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spline Graph Card -->
+                <div class="card graph-card" id="graph-card" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:12px; font-weight:800; color:var(--text-muted);">TREND PROGRESS</span>
+                        <div class="graph-toggles">
+                            <button class="btn-tab active" id="toggle-w" onclick="toggleGraphMode(true)" style="padding: 4px 10px; font-size:10px;">Weight</button>
+                            <button class="btn-tab" id="toggle-b" onclick="toggleGraphMode(false)" style="padding: 4px 10px; font-size:10px;">BMI</button>
+                        </div>
+                    </div>
+                    <div class="graph-canvas-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Logs Title -->
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; padding:0 4px;">
+                    <span style="font-size:13px; font-weight:700;">All Entries</span>
+                    <span style="font-size:11px; color:var(--text-muted); cursor:pointer;" onclick="clearAllHistory()">Clear All</span>
+                </div>
+
+                <!-- Logs list -->
+                <div id="logs-container">
+                    <!-- Logs dynamically rendered here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // State Variables
+        let isMetric = true;
+        let gender = 'male';
+        let heightCm = 170;
+        let weightKg = 70;
+        let age = 25;
+        let currentRecord = null;
+        let records = [];
+        let showWeightTrend = true;
+
+        // Initialize App
+        window.onload = function() {
+            loadRecords();
+            resetCalculator();
+        };
+
+        function setUnit(metric) {
+            isMetric = metric;
+            document.getElementById('unit-metric').classList.toggle('active', isMetric);
+            document.getElementById('unit-imperial').classList.toggle('active', !isMetric);
+
+            const hSlider = document.getElementById('height-slider');
+
+            if (isMetric) {
+                // Adjust slider for Metric bounds
+                hSlider.min = 100;
+                hSlider.max = 220;
+                if (heightCm < 100) heightCm = 100;
+                if (heightCm > 220) heightCm = 220;
+                hSlider.value = heightCm;
+            } else {
+                // Adjust slider for Imperial bounds (in cm internally)
+                hSlider.min = 100;
+                hSlider.max = 220;
+                hSlider.value = heightCm;
+            }
+            updateHeight(heightCm);
+            updateWeightDisplay();
+        }
+
+        function setGender(g) {
+            gender = g;
+            document.getElementById('gender-male').classList.toggle('active', gender === 'male');
+            document.getElementById('gender-female').classList.toggle('active', gender === 'female');
+        }
+
+        function updateHeight(val) {
+            heightCm = parseInt(val);
+            const readout = document.getElementById('height-readout');
+            if (isMetric) {
+                readout.innerText = heightCm + ' cm';
+            } else {
+                const totalInches = heightCm / 2.54;
+                const feet = Math.floor(totalInches / 12);
+                const inches = Math.round(totalInches % 12);
+                readout.innerText = `${feet}' ${inches}"`;
+            }
+        }
+
+        function updateWeightDisplay() {
+            const readout = document.getElementById('weight-readout');
+            if (isMetric) {
+                readout.innerText = weightKg.toFixed(1) + ' kg';
+            } else {
+                const lbs = weightKg * 2.20462;
+                readout.innerText = lbs.toFixed(1) + ' lbs';
+            }
+        }
+
+        function adjustWeight(direction) {
+            const increment = isMetric ? 0.5 : (1.0 / 2.20462);
+            weightKg += direction * increment;
+            if (weightKg < 25) weightKg = 25;
+            if (weightKg > 200) weightKg = 200;
+            updateWeightDisplay();
+        }
+
+        function adjustAge(direction) {
+            age += direction;
+            if (age < 2) age = 2;
+            if (age > 120) age = 120;
+            document.getElementById('age-readout').innerText = age;
+        }
+
+        // Calculations logic
+        function calculateBmi() {
+            const hM = heightCm / 100.0;
+            const bmi = weightKg / (hM * hM);
+
+            // BFP (Body Fat)
+            const genderFactor = gender === 'male' ? 1.0 : 0.0;
+            let bodyFat = (1.20 * bmi) + (0.23 * age) - (10.8 * genderFactor) - 5.4;
+            if (bodyFat < 0) bodyFat = 0;
+
+            // BMR
+            let bmr = 0;
+            if (gender === 'male') {
+                bmr = (10.0 * weightKg) + (6.25 * heightCm) - (5.0 * age) + 5.0;
+            } else {
+                bmr = (10.0 * weightKg) + (6.25 * heightCm) - (5.0 * age) - 161.0;
+            }
+
+            // TDEE
+            const activityLevel = document.getElementById('activity-level').value;
+            let multiplier = 1.2;
+            if (activityLevel === 'lightly active') multiplier = 1.375;
+            else if (activityLevel === 'moderately active') multiplier = 1.55;
+            else if (activityLevel === 'very active') multiplier = 1.725;
+            else if (activityLevel === 'extra active') multiplier = 1.9;
+            const tdee = bmr * multiplier;
+
+            // WHO Ideal weight
+            const minIdeal = 18.5 * (hM * hM);
+            const maxIdeal = 24.9 * (hM * hM);
+
+            // Save in current record structure
+            currentRecord = {
+                id: Date.now().toString(),
+                bmi: bmi,
+                weight: weightKg,
+                height: heightCm,
+                age: age,
+                gender: gender,
+                bodyFat: bodyFat,
+                bmr: bmr,
+                tdee: tdee,
+                minIdeal: minIdeal,
+                maxIdeal: maxIdeal,
+                date: new Date().toISOString()
+            };
+
+            // Display result values
+            document.getElementById('res-bmi-val').innerText = bmi.toFixed(1);
+            document.getElementById('res-bfp').innerText = bodyFat.toFixed(1) + '%';
+            document.getElementById('res-bfp-desc').innerText = getBfpStatus(bodyFat, gender);
+            document.getElementById('res-ideal').innerText = `${minIdeal.toFixed(1)} - ${maxIdeal.toFixed(1)}`;
+            document.getElementById('res-bmr').innerText = Math.round(bmr).toLocaleString();
+            document.getElementById('res-tdee').innerText = Math.round(tdee).toLocaleString();
+
+            // Set gauge needle rotation
+            const needleAngle = getNeedleAngle(bmi);
+            document.getElementById('needle').style.transform = `rotate(${needleAngle}deg)`;
+
+            // Display advice and statuses
+            let category = 'HEALTHY WEIGHT';
+            let color = 'var(--normal)';
+            let advice = 'Great job! Maintain your current routine by balancing a nutritious diet with regular cardio and physical exercise.';
+
+            if (bmi < 18.5) {
+                category = 'UNDERWEIGHT';
+                color = 'var(--underweight)';
+                advice = 'Focus on nutrient-dense foods, healthy fats, and progressive strength training to build lean muscle mass.';
+            } else if (bmi >= 25.0 && bmi < 30.0) {
+                category = 'OVERWEIGHT';
+                color = 'var(--overweight)';
+                advice = 'Incorporate more daily movement, monitor portion sizes, and aim for 150 minutes of moderate activity weekly.';
+            } else if (bmi >= 30.0) {
+                category = 'OBESE';
+                color = 'var(--obese)';
+                advice = 'Prioritize a health-focused meal plan and safe cardiovascular exercise. Consulting a doctor is highly recommended.';
+            }
+
+            const statusEl = document.getElementById('res-status');
+            statusEl.innerText = category;
+            statusEl.style.color = color;
+            document.getElementById('res-advice-title').style.color = color;
+            document.getElementById('res-advice-body').innerText = advice;
+
+            // Open panel
+            document.getElementById('results-panel').classList.add('active');
+            document.getElementById('btn-save').disabled = false;
+            document.getElementById('btn-save').innerText = 'SAVE REPORT';
+            switchView('calc'); // Ensure calc view is visible
+        }
+
+        function getBfpStatus(bfp, g) {
+            if (g === 'male') {
+                if (bfp < 6) return 'Low';
+                if (bfp <= 13) return 'Athlete';
+                if (bfp <= 17) return 'Fit';
+                if (bfp <= 24) return 'Average';
+                return 'High';
+            } else {
+                if (bfp < 14) return 'Low';
+                if (bfp <= 20) return 'Athlete';
+                if (bfp <= 24) return 'Fit';
+                if (bfp <= 31) return 'Average';
+                return 'High';
+            }
+        }
+
+        // Map BMI (15 to 40) to SVG Needle rotation angle (-90 to 90 degrees)
+        function getNeedleAngle(bmi) {
+            let clamped = Math.max(15, Math.min(40, bmi));
+            let pct = 0;
+
+            if (clamped < 18.5) {
+                pct = (clamped - 15) / (18.5 - 15) * 0.25;
+            } else if (clamped < 25) {
+                pct = 0.25 + (clamped - 18.5) / (25 - 18.5) * 0.25;
+            } else if (clamped < 30) {
+                pct = 0.5 + (clamped - 25) / (30 - 25) * 0.25;
+            } else {
+                pct = 0.75 + (clamped - 30) / (40 - 30) * 0.25;
+            }
+
+            return -90 + (pct * 180);
+        }
+
+        function resetCalculator() {
+            document.getElementById('results-panel').classList.remove('active');
+            document.getElementById('needle').style.transform = 'rotate(-90deg)';
+        }
+
+        // View Toggles
+        function switchView(tab) {
+            const isCalc = tab === 'calc';
+            document.getElementById('tab-calc').classList.toggle('active', isCalc);
+            document.getElementById('tab-history').classList.toggle('active', !isCalc);
+
+            document.getElementById('results-panel').style.display = isCalc ? 'block' : 'none';
+            document.getElementById('history-panel').style.display = isCalc ? 'none' : 'block';
+
+            if (!isCalc) {
+                renderHistoryList();
+            }
+        }
+
+        // History Management
+        function loadRecords() {
+            const data = localStorage.getItem('bmi_records');
+            records = data ? JSON.parse(data) : [];
+        }
+
+        function saveResult() {
+            if (!currentRecord) return;
+            records.unshift(currentRecord); // Newest first
+            localStorage.setItem('bmi_records', JSON.stringify(records));
+            document.getElementById('btn-save').disabled = true;
+            document.getElementById('btn-save').innerText = 'REPORT SAVED';
+            alert('Calculations successfully saved to history!');
+        }
+
+        function deleteRecord(id) {
+            records = records.filter(r => r.id !== id);
+            localStorage.setItem('bmi_records', JSON.stringify(records));
+            renderHistoryList();
+        }
+
+        function clearAllHistory() {
+            if (confirm('Clear entire history? This cannot be undone.')) {
+                records = [];
+                localStorage.removeItem('bmi_records');
+                renderHistoryList();
+            }
+        }
+
+        function getBmiColorHex(bmi) {
+            if (bmi < 18.5) return 'var(--underweight)';
+            if (bmi < 25) return 'var(--normal)';
+            if (bmi < 30) return 'var(--overweight)';
+            return 'var(--obese)';
+        }
+
+        function getBmiCategoryText(bmi) {
+            if (bmi < 18.5) return 'Underweight';
+            if (bmi < 25) return 'Healthy';
+            if (bmi < 30) return 'Overweight';
+            return 'Obese';
+        }
+
+        function renderHistoryList() {
+            const container = document.getElementById('logs-container');
+            container.innerHTML = '';
+
+            // Stats update
+            const startWeightEl = document.getElementById('hist-start-weight');
+            const currWeightEl = document.getElementById('hist-curr-weight');
+            const changeValEl = document.getElementById('hist-change-val');
+            const graphCard = document.getElementById('graph-card');
+
+            if (records.length === 0) {
+                startWeightEl.innerText = '--';
+                currWeightEl.innerText = '--';
+                changeValEl.innerText = 'No history logs';
+                changeValEl.style.color = 'var(--text-muted)';
+                graphCard.style.display = 'none';
+
+                container.innerHTML = `
+                    <div class="empty-history">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/></svg>
+                        <p style="font-size: 14px; font-weight:600;">No history recorded yet</p>
+                        <p style="font-size: 11px; margin-top:4px;">Perform calculations on the calculator tab and click save.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Stats computations
+            const currentWeight = records[0].weight;
+            const startingWeight = records[records.length - 1].weight;
+            const diff = currentWeight - startingWeight;
+
+            startWeightEl.innerText = startingWeight.toFixed(1) + ' kg';
+            currWeightEl.innerText = currentWeight.toFixed(1) + ' kg';
+
+            if (diff === 0) {
+                changeValEl.innerText = 'No change';
+                changeValEl.style.color = 'var(--text-muted)';
+            } else {
+                const pre = diff > 0 ? '+' : '';
+                changeValEl.innerText = `${pre}${diff.toFixed(1)} kg`;
+                changeValEl.style.color = diff > 0 ? 'var(--overweight)' : 'var(--normal)';
+            }
+
+            // Show graph if at least 2 records exist
+            if (records.length >= 2) {
+                graphCard.style.display = 'block';
+                drawChart();
+            } else {
+                graphCard.style.display = 'none';
+            }
+
+            // Render logs
+            records.forEach(r => {
+                const date = new Date(r.date);
+                const dateStr = date.toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'}) + 
+                                ' • ' + 
+                                date.toLocaleTimeString(undefined, {hour: '2-digit', minute:'2-digit'});
+
+                const cardHtml = `
+                    <div class="log-item">
+                        <div class="log-left">
+                            <div class="log-badge" style="background: ${getBmiColorHex(r.bmi)}1A; color: ${getBmiColorHex(r.bmi)};">
+                                ${r.bmi.toFixed(1)}
+                            </div>
+                            <div>
+                                <div style="font-weight:700; font-size:15px;">
+                                    ${r.weight.toFixed(1)} kg <span style="font-size:12px; color:var(--text-muted); font-weight:500;">| ${r.height} cm</span>
+                                </div>
+                                <div class="log-date">${dateStr}</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <span style="font-size:10px; font-weight:800; text-transform:uppercase; color:${getBmiColorHex(r.bmi)}; background:${getBmiColorHex(r.bmi)}1A; padding:4px 8px; border-radius:12px; border: 1px solid ${getBmiColorHex(r.bmi)}33;">
+                                ${getBmiCategoryText(r.bmi)}
+                            </span>
+                            <button class="btn-delete" onclick="deleteRecord('${r.id}')">
+                                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+        }
+
+        // Graph drawing on Canvas
+        function toggleGraphMode(weightMode) {
+            showWeightTrend = weightMode;
+            document.getElementById('toggle-w').classList.toggle('active', showWeightTrend);
+            document.getElementById('toggle-b').classList.toggle('active', !showWeightTrend);
+            drawChart();
+        }
+
+        function drawChart() {
+            const canvas = document.getElementById('trendChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+
+            // Match size to container
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            const width = rect.width;
+            const height = rect.height;
+            ctx.clearRect(0, 0, width, height);
+
+            // Chronological order (oldest to newest)
+            const chronRecords = [...records].reverse();
+            const dataPoints = chronRecords.map(r => showWeightTrend ? r.weight : r.bmi);
+
+            const minVal = Math.min(...dataPoints) * 0.95;
+            const maxVal = Math.max(...dataPoints) * 1.05;
+            const valRange = maxVal - minVal;
+
+            // Compute coordinates
+            const points = [];
+            const marginX = 20;
+            const marginY = 20;
+            const chartWidth = width - marginX * 2;
+            const chartHeight = height - marginY * 2;
+
+            for (let i = 0; i < dataPoints.length; i++) {
+                const x = marginX + (i / (dataPoints.length - 1)) * chartWidth;
+                const y = marginY + chartHeight - ((dataPoints[i] - minVal) / valRange) * chartHeight;
+                points.push({x, y});
+            }
+
+            // Draw Area Gradient under spline
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, height - marginY);
+            ctx.lineTo(points[0].x, points[0].y);
+            
+            // Draw spline line
+            for (let i = 0; i < points.length - 1; i++) {
+                const p0 = points[i];
+                const p1 = points[i + 1];
+                const cpX1 = p0.x + (p1.x - p0.x) / 2;
+                const cpY1 = p0.y;
+                const cpX2 = p0.x + (p1.x - p0.x) / 2;
+                const cpY2 = p1.y;
+                ctx.bezierCurveTo(cpX1, cpY1, cpX2, cpY2, p1.x, p1.y);
+            }
+            ctx.lineTo(points[points.length - 1].x, height - marginY);
+            ctx.closePath();
+            
+            const areaGrad = ctx.createLinearGradient(0, 0, 0, height);
+            areaGrad.addColorStop(0, 'rgba(13, 148, 136, 0.22)');
+            areaGrad.addColorStop(1, 'rgba(13, 148, 136, 0.00)');
+            ctx.fillStyle = areaGrad;
+            ctx.fill();
+
+            // Draw spline line
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 0; i < points.length - 1; i++) {
+                const p0 = points[i];
+                const p1 = points[i + 1];
+                const cpX1 = p0.x + (p1.x - p0.x) / 2;
+                const cpY1 = p0.y;
+                const cpX2 = p0.x + (p1.x - p0.x) / 2;
+                const cpY2 = p1.y;
+                ctx.bezierCurveTo(cpX1, cpY1, cpX2, cpY2, p1.x, p1.y);
+            }
+            ctx.strokeStyle = '#0d9488';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Draw Dots
+            points.forEach((p, idx) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#0d9488';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+                
+                // Value text label above dot
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '10px Outfit';
+                ctx.textAlign = 'center';
+                ctx.fillText(dataPoints[idx].toFixed(1), p.x, p.y - 10);
+            });
+        }
+    </script>
+</body>
+</html>
