@@ -76,11 +76,11 @@ class BmiGaugePainter extends CustomPainter {
     final double thickness = 22.0;
     final double innerRadius = outerRadius - thickness;
 
-    // Define sector colors
-    const Color colorUnder = Colors.cyan;
-    const Color colorNormal = Colors.emerald;
-    const Color colorOver = Colors.orange;
-    const Color colorObese = Colors.redAccent;
+    // Define sector colors (Luxury Old Money palette)
+    const Color colorUnder = Color(0xFF2B6CB0);  // Sapphire Blue
+    const Color colorNormal = Color(0xFF1B4D3E); // Forest Green
+    const Color colorOver = Color(0xFFB7791F);   // Amber Gold
+    const Color colorObese = Color(0xFF9B2C2C);  // Burgundy Red
 
     // Paint options for segments
     final Paint segmentPaint = Paint()
@@ -191,10 +191,10 @@ class BmiGaugePainter extends CustomPainter {
   }
 
   Color _getColorForBmi(double bmi) {
-    if (bmi < 18.5) return Colors.cyan;
-    if (bmi < 25.0) return Colors.emerald;
-    if (bmi < 30.0) return Colors.orange;
-    return Colors.redAccent;
+    if (bmi < 18.5) return const Color(0xFF2B6CB0);  // Sapphire
+    if (bmi < 25.0) return const Color(0xFF1B4D3E);  // Forest Green
+    if (bmi < 30.0) return const Color(0xFFB7791F);  // Amber Gold
+    return const Color(0xFF9B2C2C);                  // Burgundy
   }
 
   void _drawLabelText(Canvas canvas, String text, Offset position) {

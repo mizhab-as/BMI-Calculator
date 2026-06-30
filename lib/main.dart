@@ -10,127 +10,62 @@ class BMICalculatorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Premium health brand color scheme (Calming teal and modern indigo)
-    const primaryColor = Color(0xFF0D9488); // Deep Teal
-    const secondaryColor = Color(0xFF4F46E5); // Indigo
-    const darkBg = Color(0xFF090D16); // High-premium dark blue-black
-    const darkSurface = Color(0xFF151D2A); // Glass card backdrop
-    const darkBorder = Color(0xFF222F43); // Subtle card boundary
+    // "Old Money" Luxury Color Scheme: Antique Gold, Forest Green, Ivory & AMOLED Black
+    const primaryGold = Color(0xFFC5A880);      // Antique Gold
+    const secondaryGreen = Color(0xFF1B4D3E);   // British Racing Green
+    const amoledBg = Color(0xFF000000);         // Pure AMOLED Black
+    const luxuryCardBg = Color(0xFF0C0E12);     // Soft metallic charcoal surface
+    const luxuryBorder = Color(0xFF1F242D);     // Subtle bronze-grey border
+    const ivoryWhite = Color(0xFFF9F6F0);       // Warm Ivory Text
 
     return MaterialApp(
       title: 'Smart BMI',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system, // Respect system settings
 
-      // 1. Light Theme
+      // 1. Light Theme (Old Money Editorial Vibe)
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
+          seedColor: secondaryGreen,
           brightness: Brightness.light,
-          primary: primaryColor,
-          secondary: secondaryColor,
-          surface: const Color(0xFFF8FAFC),
+          primary: secondaryGreen,
+          secondary: primaryGold,
+          surface: const Color(0xFFFAF9F6), // Ivory paper
         ),
-        scaffoldBackgroundColor: const Color(0xFFF1F5F9),
+        scaffoldBackgroundColor: const Color(0xFFF4F1EA), // Linen paper background
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
           titleTextStyle: TextStyle(
-            color: Color(0xFF0F172A),
+            color: Color(0xFF1B241D),
             fontSize: 22,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.0,
           ),
-          iconTheme: IconThemeData(color: Color(0xFF0F172A)),
+          iconTheme: IconThemeData(color: Color(0xFF1B241D)),
         ),
         cardTheme: CardTheme(
-          color: Colors.white,
+          color: const Color(0xFFFAF9F6),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Colors.grey.shade200, width: 1),
+            side: const BorderSide(color: Color(0xFFE5DFD3), width: 1.5),
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Colors.white,
-          labelStyle: const TextStyle(color: primaryColor, fontWeight: FontWeight.w500),
+          fillColor: const Color(0xFFFAF9F6),
+          labelStyle: const TextStyle(color: secondaryGreen, fontWeight: FontWeight.w600),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderSide: const BorderSide(color: Color(0xFFDED6C4)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: primaryColor, width: 2),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Colors.redAccent, width: 1),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
-          ),
-        ),
-      ),
-
-      // 2. Dark Theme (Focus point for premium vibe)
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-          brightness: Brightness.dark,
-          primary: primaryColor,
-          secondary: secondaryColor,
-          surface: darkSurface,
-          onSurface: Colors.white,
-          outline: darkBorder,
-        ),
-        scaffoldBackgroundColor: darkBg,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-          iconTheme: IconThemeData(color: Colors.white),
-        ),
-        cardTheme: CardTheme(
-          color: darkSurface,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: const BorderSide(color: darkBorder, width: 1.5),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: const Color(0xFF0F1724),
-          labelStyle: const TextStyle(color: Colors.tealAccent, fontWeight: FontWeight.w500),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: darkBorder, width: 1.5),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Colors.tealAccent, width: 2),
+            borderSide: const BorderSide(color: secondaryGreen, width: 2),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
@@ -144,6 +79,76 @@ class BMICalculatorApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             elevation: 0,
+            backgroundColor: secondaryGreen,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+        ),
+      ),
+
+      // 2. Dark Theme (AMOLED Quiet Luxury Vibe)
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: primaryGold,
+          brightness: Brightness.dark,
+          primary: primaryGold,
+          secondary: secondaryGreen,
+          surface: luxuryCardBg,
+          onSurface: ivoryWhite,
+          outline: luxuryBorder,
+        ),
+        scaffoldBackgroundColor: amoledBg,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: ivoryWhite,
+            fontSize: 22,
+            fontWeight: FontWeight.w850,
+            letterSpacing: 1.0,
+          ),
+          iconTheme: IconThemeData(color: ivoryWhite),
+        ),
+        cardTheme: CardTheme(
+          color: luxuryCardBg,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: luxuryBorder, width: 1.5),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFF050608),
+          labelStyle: const TextStyle(color: primaryGold, fontWeight: FontWeight.w600),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: luxuryBorder, width: 1.5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: primaryGold, width: 2),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: primaryGold,
+            foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),

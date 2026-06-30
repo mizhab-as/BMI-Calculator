@@ -69,10 +69,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Color _getBmiColor(double bmi) {
-    if (bmi < 18.5) return Colors.cyan;
-    if (bmi < 25.0) return Colors.emerald;
-    if (bmi < 30.0) return Colors.orange;
-    return Colors.redAccent;
+    if (bmi < 18.5) return const Color(0xFF2B6CB0);  // Sapphire
+    if (bmi < 25.0) return const Color(0xFF1B4D3E);  // Forest Green
+    if (bmi < 30.0) return const Color(0xFFB7791F);  // Amber Gold
+    return const Color(0xFF9B2C2C);                  // Burgundy
   }
 
   String _getBmiCategory(double bmi) {
